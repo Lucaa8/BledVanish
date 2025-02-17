@@ -18,7 +18,6 @@ public class BledVanish extends JavaPlugin {
     private static BledVanish instance;
     private static NamespacedKey vanishedKey;
     private static NamespacedKey vanishModeKey;
-    private static NamespacedKey silentChestKey;
     private static Permission vanishPermission;
     private static PotionEffect vanishPotion;
     private static PotionEffect glowPotion;
@@ -31,7 +30,6 @@ public class BledVanish extends JavaPlugin {
         instance = this;
         vanishedKey = new NamespacedKey(this, "vanished");
         vanishModeKey = new NamespacedKey(this, "vanishMode");
-        silentChestKey = new NamespacedKey(this, "silentChest");
         vanishPermission = getServer().getPluginManager().getPermission("bledvanish.command.vanish");
         vanishPotion = new PotionEffect(PotionEffectType.INVISIBILITY, PotionEffect.INFINITE_DURATION, 0, false, false, true);
         glowPotion = new PotionEffect(PotionEffectType.GLOWING, PotionEffect.INFINITE_DURATION, 0, false, false, false);
