@@ -19,7 +19,7 @@ Players in a vanished state receive a permanent invisibility effect and a glowin
 As described in the commands section, staff members can configure their vanish state upon joining the server using the `/v` command.  
 
 ### Actions
-Currently, vanished players cannot pick up items or arrows from the ground. In a future update, they will be able to open chests silently. 
+Currently, vanished players cannot pick up items or arrows from the ground. They automatically switch to Silent Chest mode (from [OpenInv](https://dev.bukkit.org/projects/openinv)) when vanish is enabled.
 
 ### Special Cases
 - When a player is promoted to Moderator, they won’t immediately gain the ability to see vanished players. They must leave and rejoin the server for the changes to take effect.  
