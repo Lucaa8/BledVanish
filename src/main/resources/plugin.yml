@@ -5,6 +5,8 @@ author: Luca008
 main: ${mainClass}
 api-version: 1.20
 prefix: BledVanish
+depend:
+  - OpenInv
 commands:
   vanish:
     description: Toggle a player's vanish state

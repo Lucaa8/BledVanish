@@ -1,5 +1,6 @@
 package ch.luca008.BledVanish;
 
+import com.lishid.openinv.OpenInv;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ public class BledVanish extends JavaPlugin {
     private static BledVanish instance;
     private static NamespacedKey vanishedKey;
     private static NamespacedKey vanishModeKey;
+    private static NamespacedKey silentChestKey;
     private static Permission vanishPermission;
     private static PotionEffect vanishPotion;
     private static PotionEffect glowPotion;
@@ -29,6 +31,7 @@ public class BledVanish extends JavaPlugin {
         instance = this;
         vanishedKey = new NamespacedKey(this, "vanished");
         vanishModeKey = new NamespacedKey(this, "vanishMode");
+        silentChestKey = new NamespacedKey(this, "silentChest");
         vanishPermission = getServer().getPluginManager().getPermission("bledvanish.command.vanish");
         vanishPotion = new PotionEffect(PotionEffectType.INVISIBILITY, PotionEffect.INFINITE_DURATION, 0, false, false, true);
         glowPotion = new PotionEffect(PotionEffectType.GLOWING, PotionEffect.INFINITE_DURATION, 0, false, false, false);
@@ -39,6 +42,21 @@ public class BledVanish extends JavaPlugin {
 
     public void onDisable() {
 
+    }
+
+    private OpenInv getOpenInv() {
+        return (OpenInv) getServer().getPluginManager().getPlugin("OpenInv");
+    }
+
+    private void activateSilentChest(Player player, boolean state)
+    {
+        OpenInv oi = getOpenInv();
+        boolean currentState = oi.getSilentContainerStatus(player);
+        if(currentState == state)
+        {
+            return;
+        }
+        oi.setSilentContainerStatus(player, state);
     }
 
     protected void updateVanishState(Player player)
@@ -86,10 +104,15 @@ public class BledVanish extends JavaPlugin {
         {
             return;
         }
+        Runnable setVanishState = () -> {
+            player.getPersistentDataContainer().set(vanishedKey, PersistentDataType.BOOLEAN, state);
+            activateSilentChest(player, state);
+            updateVanishState(player);
+        };
         if(force)
         {
-            player.getPersistentDataContainer().set(vanishedKey, PersistentDataType.BOOLEAN, state);
-            updateVanishState(player);
+            // Enters here when BledVanish#setVanished has been called from the JoinEvent (we do not want any plugin cancel the updateVanishState)
+            setVanishState.run();
         }
         else
         {
@@ -97,8 +120,7 @@ public class BledVanish extends JavaPlugin {
             Bukkit.getPluginManager().callEvent(ev);
             if(!ev.isCancelled())
             {
-                player.getPersistentDataContainer().set(vanishedKey, PersistentDataType.BOOLEAN, state);
-                updateVanishState(player);
+                setVanishState.run();
             }
         }
     }
